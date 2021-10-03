@@ -7,6 +7,7 @@ import { userSignIn } from '../controllers/store/actions/user';
 
 const ArticlesList = () => {
   const [articles, setArticles] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     const fetchArticles = async () => await axios.get('/api/articles');
@@ -24,6 +25,7 @@ const ArticlesList = () => {
           key={i}
         />
       ))}
+      <button onClick={() => history.push('/articles/create')}>Create</button>
     </div>
   );
 };

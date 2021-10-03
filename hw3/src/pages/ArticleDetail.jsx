@@ -13,6 +13,7 @@ const ArticleDetail = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState(null);
   const [fetchAgain, setFetchAgain] = useState(true);
+  const history = useHistory();
 
   const isAuthor = currentUser?.id === article?.author_id;
 
@@ -36,9 +37,7 @@ const ArticleDetail = () => {
     }
   }, [fetchAgain]);
 
-  console.log(newComment);
   const onConfirm = async (content) => {
-    console.log('confirm');
     await axios.post('/api/comments', {
       author_id: currentUser?.id,
       content,
@@ -50,6 +49,11 @@ const ArticleDetail = () => {
     setFetchAgain(true);
   };
 
+  const onDelete = async () => {
+    await axios.delete(`/api/articles/${id}`);
+    history.push('/articles');
+  };
+
   return (
     <div>
       <div>Author: {article?.authorName}</div>
@@ -57,8 +61,10 @@ const ArticleDetail = () => {
       <div>Content: {article?.content}</div>
       {isAuthor && (
         <div>
-          <button>Edit Article</button>
-          <button>Delete Article</button>
+          <button onClick={() => history.push(`/articles/${id}/edit`)}>
+            Edit Article
+          </button>
+          <button onClick={onDelete}>Delete Article</button>
         </div>
       )}
       {comments.map((c, i) => (

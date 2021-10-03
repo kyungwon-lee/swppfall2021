@@ -11,6 +11,7 @@ import {
 import './App.css';
 import { userAutoLogin, userLogout } from './controllers/store/actions/user';
 import ArticleDetail from './pages/ArticleDetail';
+import ArticleEdit from './pages/ArticleEdit';
 import ArticlesList from './pages/ArticlesList';
 import LoginPage from './pages/Login';
 
@@ -44,6 +45,10 @@ const App = () => {
       </div>
       <Switch>
         <Route path="/login" component={LoginPage} />
+        <Route path="/articles/create">
+          <ArticleEdit mode="create" />
+        </Route>
+        <Route path="/articles/:id/edit" component={ArticleEdit} />
         <Route path="/articles/:id" component={ArticleDetail} />
         <Route path="/articles" component={ArticlesList} />
       </Switch>
