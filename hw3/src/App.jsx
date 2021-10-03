@@ -10,7 +10,8 @@ import {
 } from 'react-router-dom';
 import './App.css';
 import { userAutoLogin, userLogout } from './controllers/store/actions/user';
-import ArticlesListPage from './pages/ArticlesList';
+import ArticleDetail from './pages/ArticleDetail';
+import ArticlesList from './pages/ArticlesList';
 import LoginPage from './pages/Login';
 
 const App = () => {
@@ -35,9 +36,6 @@ const App = () => {
     dispatch(userLogout());
   };
 
-  console.log(currentUser);
-  console.log(isLoggedIn);
-
   return (
     <>
       <div className="App" style={{ marginBottom: 24 }}>
@@ -46,7 +44,8 @@ const App = () => {
       </div>
       <Switch>
         <Route path="/login" component={LoginPage} />
-        <Route path="/articles" component={ArticlesListPage} />
+        <Route path="/articles/:id" component={ArticleDetail} />
+        <Route path="/articles" component={ArticlesList} />
       </Switch>
     </>
   );
