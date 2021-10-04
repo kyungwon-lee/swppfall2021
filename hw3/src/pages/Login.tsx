@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { userLogin } from "../controllers/store/actions/user";
+import { ReduxState } from "../controllers/store/store";
 
-const LoginPage = () => {
+const LoginPage: React.FunctionComponent = () => {
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
 
-    const { isLoggedIn } = useSelector((store) => store.user);
+    const { isLoggedIn } = useSelector((store: ReduxState) => store.user);
     const dispatch = useDispatch();
     const history = useHistory();
 

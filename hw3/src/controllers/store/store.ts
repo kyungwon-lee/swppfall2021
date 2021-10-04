@@ -1,8 +1,12 @@
 import thunk from "redux-thunk";
 import { createStore, combineReducers, applyMiddleware } from "redux";
-import userReducer from "./reducers/user";
+import userReducer, { UserState } from "./reducers/user";
 
-export const rootReducer = combineReducers({
+export interface ReduxState {
+    user: UserState;
+}
+
+export const rootReducer = combineReducers<ReduxState>({
     user: userReducer,
 });
 
