@@ -9,12 +9,13 @@ const LoginPage: React.FunctionComponent = () => {
     const [password, setPassword] = useState("");
 
     const { isLoggedIn } = useSelector((store: ReduxState) => store.user);
-    const dispatch = useDispatch();
     const history = useHistory();
 
     useEffect(() => {
         if (isLoggedIn) history.push("/articles");
     }, [history, isLoggedIn]);
+
+    const dispatch = useDispatch();
 
     const onLogin = () => {
         if (id === "swpp@snu.ac.kr" && password === "iluvswpp") {

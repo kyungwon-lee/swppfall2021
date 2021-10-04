@@ -7,19 +7,24 @@ import ArticleListItem from "../components/ArticlesListItem";
 type ArticleItem = Article & { authorName: string };
 
 const ArticlesList: React.FunctionComponent = () => {
-    const history = useHistory();
     const [articles, setArticles] = useState<ArticleItem[]>([]);
+    const history = useHistory();
 
     useEffect(() => {
-        const fetchArticleItems = async () => {
-            const articles: Article[] = (await queryArticles()).items;
-            const articleItems: ArticleItem[] = (await Promise.all(articles.map((a) => readUser({ id: a.author_id })))).map((user, i) => ({
-                ...articles[i],
-                authorName: user.entity.name,
-            }));
-            setArticles(articleItems);
-        };
         fetchArticleItems();
+    }, []);
+
+    const fetchArticleItems = async () => {
+        const articles: Article[] = (await queryArticles()).items;
+        const articleItems: ArticleItem[] = (await Promise.all(articles.map((a) => readUser({ id: a.author_id })))).map((user, i) => ({
+            ...articles[i],
+            authorName: user.entity.name,
+        }));
+        setArticles(articleItems);
+    };
+
+    useEffect(() => {
+        return () => setArticles([]);
     }, []);
 
     return (

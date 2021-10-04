@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Switch, Route, useLocation, useHistory } from "react-router-dom";
+import { Switch, Route, useLocation, useHistory, Redirect } from "react-router-dom";
 import "./App.css";
 import { userAutoLogin, userLogout } from "./controllers/store/actions/user";
 import { ReduxState } from "./controllers/store/store";
+import ArticleCreate from "./pages/ArticleCreate";
 import ArticleDetail from "./pages/ArticleDetail";
 import ArticleEdit from "./pages/ArticleEdit";
 import ArticlesList from "./pages/ArticlesList";
@@ -16,8 +17,7 @@ const App: React.FunctionComponent = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const forbiddenPath = ["/articles", "/articles"];
-        if (!isLoggedIn && forbiddenPath.includes(location.pathname)) {
+        if (!isLoggedIn && location.pathname !== "/login") {
             history.push("/login");
         }
     }, [location.pathname, isLoggedIn]);
@@ -38,12 +38,11 @@ const App: React.FunctionComponent = () => {
             </div>
             <Switch>
                 <Route path="/login" component={LoginPage} />
-                {/* <Route path="/articles/create">
-                    <ArticleEdit mode="create" />
-                </Route> */}
+                <Route path="/articles/create" component={ArticleCreate} />
                 <Route path="/articles/:id/edit" component={ArticleEdit} />
                 <Route path="/articles/:id" component={ArticleDetail} />
                 <Route path="/articles" component={ArticlesList} />
+                <Redirect to="/login" />
             </Switch>
         </>
     );
