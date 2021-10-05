@@ -35,7 +35,10 @@ const ArticleDetail: React.FunctionComponent = () => {
     const [commentsUpdated, setCommentsUpdated] = useState<boolean>(false);
 
     useEffect(() => {
-        if (commentsUpdated) fetchComments();
+        if (commentsUpdated) {
+            fetchComments();
+            setCommentsUpdated(false);
+        }
     }, [commentsUpdated]);
 
     const onCommentConfirm = async (comment: string | null) => {
