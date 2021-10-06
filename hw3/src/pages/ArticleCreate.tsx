@@ -14,8 +14,8 @@ const ArticleCreate: React.FunctionComponent = () => {
 
     const onArticleCreate = async () => {
         if (!title || !content || !currentUser?.id) return;
-        await createArticle({ createPayload: { author_id: currentUser?.id, title, content } });
-        history.push(`/articles`);
+        const newArticleId = (await createArticle({ createPayload: { author_id: currentUser?.id, title, content } })).entityId;
+        history.push(`/articles/${newArticleId}`);
     };
 
     return (
