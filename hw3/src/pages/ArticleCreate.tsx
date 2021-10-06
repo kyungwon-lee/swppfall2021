@@ -6,8 +6,8 @@ import WriteArticle from "../components/WriteArticle";
 import { ReduxState } from "../controllers/store/store";
 
 const ArticleCreate: React.FunctionComponent = () => {
-    const [title, setTitle] = useState<string | undefined>(undefined);
-    const [content, setContent] = useState<string | undefined>(undefined);
+    const [title, setTitle] = useState<string>("");
+    const [content, setContent] = useState<string>("");
 
     const { currentUser } = useSelector((store: ReduxState) => store.user);
     const history = useHistory();
