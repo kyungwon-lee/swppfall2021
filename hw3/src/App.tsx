@@ -31,11 +31,13 @@ const App: React.FunctionComponent = () => {
     };
 
     return (
-        <>
-            <div className="App" style={{ marginBottom: 24 }}>
-                <h1>SWPP HW3!</h1>
-                {isLoggedIn && <button onClick={onLogout}>logout</button>}
-            </div>
+        <div className="App" style={{ marginBottom: 24 }}>
+            <h1 className="App-header">SWPP HW3!</h1>
+            {isLoggedIn && (
+                <button onClick={onLogout} style={{ alignContent: "flex-end" }}>
+                    로그아웃
+                </button>
+            )}
             <Switch>
                 <Route path="/login" component={LoginPage} />
                 <Route path="/articles/create" component={ArticleCreate} />
@@ -44,7 +46,7 @@ const App: React.FunctionComponent = () => {
                 <Route path="/articles" component={ArticlesList} />
                 <Redirect to="/login" />
             </Switch>
-        </>
+        </div>
     );
 };
 

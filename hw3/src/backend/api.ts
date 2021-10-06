@@ -6,9 +6,10 @@ interface CreateProps<entityCreateProp> {
 }
 
 function produceCreateAPI<entityCreateProp>(apiPath: string) {
-    return async function ({ createPayload }: CreateProps<entityCreateProp>): Promise<void> {
+    return async function ({ createPayload }: CreateProps<entityCreateProp>): Promise<{ entityId: string }> {
         try {
-            await axios.post(`/api${apiPath}`, createPayload);
+            const res: any = await axios.post(`/api${apiPath}`, createPayload);
+            return { entityId: res.data.id };
         } catch (error) {
             console.log(error);
             throw error;
@@ -35,7 +36,7 @@ function produceQueryAPI<returnEntityType>(apiPath: string) {
 export function produceReadAPI<returnEntityType>(apiPath: string) {
     return async function ({ id }: { id: number }): Promise<{ entity: returnEntityType }> {
         try {
-            const res: any = await axios.get(`/api${apiPath}/${id}`);
+            const res = await axios.get(`/api${apiPath}/${id}`);
             return { entity: res.data };
         } catch (error) {
             console.log(error);
