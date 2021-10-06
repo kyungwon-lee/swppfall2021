@@ -15,7 +15,7 @@ const ArticleDetail: React.FunctionComponent = () => {
     const [articleItem, setArticleItem] = useState<ArticleItem | undefined>();
 
     const [commentItems, setCommentItems] = useState<CommentItem[]>([]);
-    const [newComment, setNewComment] = useState<string | null>(null);
+    const [newComment, setNewComment] = useState<string>("");
 
     const { currentUser } = useSelector((store: ReduxState) => store.user);
     const history = useHistory();
@@ -43,8 +43,9 @@ const ArticleDetail: React.FunctionComponent = () => {
 
     const onCommentConfirm = async (comment: string | null) => {
         if (currentUser?.id && comment) {
-            createComment({ createPayload: { author_id: currentUser?.id, content: comment, article_id: articleId } });
+            await createComment({ createPayload: { author_id: currentUser?.id, content: comment, article_id: articleId } });
             setCommentsUpdated(true);
+            setNewComment("");
         }
     };
 
@@ -96,7 +97,7 @@ const ArticleDetail: React.FunctionComponent = () => {
                 <Link to="/articles">Back</Link>
             </button>
             Comment
-            <textarea rows={2} onChange={(e) => setNewComment(e.target.value)}></textarea>
+            <textarea rows={2} value={newComment} onChange={(e) => setNewComment(e.target.value)}></textarea>
             <button onClick={() => onCommentConfirm(newComment)}>Confirm Comment</button>
         </div>
     );
