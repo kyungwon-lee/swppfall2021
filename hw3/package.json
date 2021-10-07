@@ -1,60 +1,68 @@
 {
-    "name": "skeleton",
-    "version": "0.1.0",
-    "private": true,
-    "proxy": "http://localhost:8000",
-    "dependencies": {
-        "@reduxjs/toolkit": "^1.6.1",
-        "axios": "^0.22.0",
-        "enzyme": "^3.11.0",
-        "enzyme-adapter-react-16": "^1.15.6",
-        "json-server": "^0.16.3",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2",
-        "react-redux": "^7.2.5",
-        "react-router-dom": "^5.3.0",
-        "react-scripts": "4.0.3",
-        "react-test-renderer": "^17.0.2",
-        "redux": "^4.1.1",
-        "redux-thunk": "^2.3.0"
-    },
-    "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject",
-        "backend": "cp api/db.json api/_db.json && json-server --watch api/_db.json --routes api/routes.json --port 8000",
-        "lint": "eslint './**/*.{ts,tsx,js,jsx}'",
-        "lint:fix": "eslint --fix './**/*.{ts,tsx,js,jsx}'"
-    },
-    "eslintConfig": {
-        "extends": "react-app"
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "devDependencies": {
-        "@types/react": "^17.0.26",
-        "@types/react-dom": "^17.0.9",
-        "@types/react-redux": "^7.1.18",
-        "@types/react-router-dom": "^5.3.0",
-        "@types/redux-thunk": "^2.1.0",
-        "eslint": "^7.32.0",
-        "eslint-config-prettier": "^8.3.0",
-        "eslint-plugin-no-null": "^1.0.2",
-        "eslint-plugin-prettier": "^4.0.0",
-        "eslint-plugin-react": "^7.26.1",
-        "eslint-plugin-react-hooks": "^4.2.0",
-        "prettier": "^2.4.1",
-        "typescript": "^4.4.3"
-    }
+  "name": "skeleton",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:8000",
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.6.1",
+    "axios": "^0.22.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
+    "json-server": "^0.16.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.5",
+    "react-router-dom": "^5.3.0",
+    "react-scripts": "4.0.3",
+    "react-test-renderer": "^17.0.2",
+    "redux": "^4.1.1",
+    "redux-thunk": "^2.3.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "backend": "cp api/db.json api/_db.json && json-server --watch api/_db.json --routes api/routes.json --port 8000",
+    "lint": "eslint './**/*.{ts,tsx,js,jsx}'",
+    "lint:fix": "eslint --fix './**/*.{ts,tsx,js,jsx}'"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.26",
+    "@types/react-dom": "^17.0.9",
+    "@types/react-redux": "^7.1.18",
+    "@types/react-router-dom": "^5.3.0",
+    "@types/redux-thunk": "^2.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-no-null": "^1.0.2",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.3"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,tsx,ts}",
+      "!src/index.tsx",
+      "!src/serviceWorker.js",
+      "!store/action/store.ts"
+    ]
+  }
 }
