@@ -6,33 +6,33 @@ import WriteArticle from "../../components/WriteArticle";
 import { ReduxState } from "../../store/store";
 
 const ArticleCreate: React.FunctionComponent = () => {
-  const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+    const [title, setTitle] = useState<string>("");
+    const [content, setContent] = useState<string>("");
 
-  const { currentUser } = useSelector((store: ReduxState) => store.user);
-  const history = useHistory();
+    const { currentUser } = useSelector((store: ReduxState) => store.user);
+    const history = useHistory();
 
-  const onArticleCreate = async () => {
-    if (!title || !content || !currentUser?.id) return;
-    const newArticleId = (
-      await createArticle({
-        createPayload: { author_id: currentUser?.id, title, content },
-      })
-    ).entityId;
-    history.push(`/articles/${newArticleId}`);
-  };
+    const onArticleCreate = async () => {
+        if (!title || !content || !currentUser?.id) return;
+        const newArticleId = (
+            await createArticle({
+                createPayload: { author_id: currentUser?.id, title, content },
+            })
+        ).entityId;
+        history.push(`/articles/${newArticleId}`);
+    };
 
-  return (
-    <WriteArticle
-      title={title}
-      content={content}
-      onTitleChange={setTitle}
-      onContentChange={setContent}
-      onConfirm={onArticleCreate}
-      backUrl={"/articles"}
-      from={"create"}
-    />
-  );
+    return (
+        <WriteArticle
+            title={title}
+            content={content}
+            onTitleChange={setTitle}
+            onContentChange={setContent}
+            onConfirm={onArticleCreate}
+            backUrl={"/articles"}
+            from={"create"}
+        />
+    );
 };
 
 export default ArticleCreate;
