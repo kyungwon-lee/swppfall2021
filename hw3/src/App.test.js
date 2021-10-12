@@ -1,107 +1,75 @@
-import React, { useEffect } from "react";
-import * as reactRedux from "react-redux";
-import {
-  Switch,
-  Route,
-  useLocation,
-  useHistory,
-  Redirect,
-} from "react-router-dom";
-import "./App.css";
-import { userAutoLogin, userLogout } from "./store/actions/user";
-import { ReduxState } from "./store/store";
-import ArticleCreate from "./containers/Article/ArticleCreate";
-import ArticleDetail from "./containers/Article/ArticleDetail";
-import ArticleEdit from "./containers/Article/ArticleEdit";
-import ArticlesList from "./containers/Article/ArticlesList";
-import LoginPage from "./containers/Login/Login";
-import { getMockStore } from "./test-utils/mocks";
-import { shallow, mount } from "enzyme";
-import ReactDOM from "react-dom";
-import "./index.css";
+import Enzyme, { mount, shallow } from "enzyme";
+import EnzymeAdapter from "enzyme-adapter-react-17-updated";
+import * as redux from "react-redux";
+import router from "react-router";
+
 import App from "./App";
-import { history } from "./store/store";
-import { Provider } from "react-redux";
-import { useDispatch, useSelector } from "react-redux";
 
-const stubInitialState = {
-  user: {
-    currentUser: undefined,
-    isLoggedIn: false,
-    autoLoggedIn: false,
-  },
-};
-
-let mockStore = getMockStore(stubInitialState);
-const mockHistoryPush = jest.fn();
-
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useHistory: () => ({
-    push: jest.fn(),
-  }),
-  useLocation: () => ({
-    push: jest.fn(),
-  }),
-  useDispatch: () => ({
-    push: jest.fn(),
-  }),
-}));
-
-describe("App test", () => {
-  let app;
-  const useSelectorMock = jest.spyOn(reactRedux, "useSelector");
-  const useDispatchMock = jest.spyOn(reactRedux, "useDispatch");
-
-  beforeEach(() => {
-    useSelectorMock.mockReturnValue({ isLoggedIn: false, autoLoggedIn: false });
-    // useSelectorMock.mockImplementation((selector) =>
-    //   selector({
-    //     isLoggedIn: false,
-    //     autoLoggedIn: false,
-    //   })
-    // );
-
-    app = (
-      <Provider store={mockStore}>
-        <App history={history} />
-      </Provider>
-    );
-  });
-
-  it("renders without crashing", () => {
-    const component = mount(app);
-    expect(component.find(".App").length).toBe(1);
-  });
-
-  it("useSelector test", () => {
-    const component = mount(app);
-    const { getByText } = render(<App />);
-    expect(getByText("isLoggedIn"));
-  });
-
-  it("loggedin user redirect test", () => {
-    // useSelectorMock.mockImplementation((selector) =>
-    //   selector({
-    //     isLoggedIn: false,
-    //     autoLoggedIn: true,
-    //   })
-    // );
-    // useSelectorMock.mockImplementation((selector) =>
-    //   selector({
-    //     isLoggedIn: false,
-    //     autoLoggedIn: true,
-    //   })
-    // );
-    useSelectorMock.mockReturnValue({ isLoggedIn: false, autoLoggedIn: true });
-    expect(mockHistoryPush).toHaveBeenCalledWith("/login");
-  }); // line 30
-
-  it("logout test", () => {}); // line 39
+Enzyme.configure({
+    adapter: new EnzymeAdapter(),
+    disableLifecycleMethods: true,
 });
 
-// it('renders without crashing', () => {
-//   const div = document.createElement('div');
-//   ReactDOM.render(<App />, div);
-//   ReactDOM.unmountComponentAtNode(div);
-// });
+const mockPush = jest.fn();
+const mockDispatch = jest.fn();
+
+jest.mock("react-router", () => ({
+    ...jest.requireActual("react-router"),
+    useHistory: () => ({ push: mockPush }),
+}));
+
+jest.mock("react-redux", () => ({
+    ...jest.requireActual("react-redux"),
+    useDispatch: () => mockDispatch,
+}));
+
+const useLocationMock = jest.spyOn(router, "useLocation");
+const useSelectorMock = jest.spyOn(redux, "useSelector");
+
+describe("App test", () => {
+    let app;
+
+    beforeEach(() => {
+        useSelectorMock.mockReturnValue({ isLoggedIn: false, autoLoggedIn: false });
+        useLocationMock.mockReturnValue({ pathname: "/" });
+        app = <App />;
+    });
+
+    it("renders without crashing", () => {
+        const component = mount(app);
+        expect(component.find(".App").length).toBe(1);
+    });
+
+    it("logout button rendered when logged in", () => {
+        useSelectorMock.mockReturnValue({ isLoggedIn: true, autoLoggedIn: false });
+        const component = shallow(app);
+        let logoutButton = component.find("#logout-button");
+        expect(logoutButton.length).toBe(1);
+    });
+
+    it("logout button not rendered when not logged in", () => {
+        useSelectorMock.mockReturnValue({ isLoggedIn: false, autoLoggedIn: false });
+        const component = shallow(app);
+        let logoutButton = component.find("#logout-button");
+        expect(logoutButton.length).toBe(0);
+    });
+
+    it("redirects to login page when tried auto login and failed", () => {
+        useSelectorMock.mockReturnValue({ isLoggedIn: false, autoLoggedIn: true });
+        mount(app);
+        expect(mockPush).toHaveBeenCalledWith("/login");
+    });
+
+    it("try auto login on mount", () => {
+        mount(app);
+        expect(mockDispatch).toHaveBeenCalled();
+    });
+
+    it("logout when logout button clicked", () => {
+        useSelectorMock.mockReturnValue({ isLoggedIn: true, autoLoggedIn: true });
+        const component = shallow(app);
+        let logoutButton = component.find("#logout-button");
+        logoutButton.simulate("click");
+        expect(mockDispatch).toHaveBeenCalled();
+    });
+});
