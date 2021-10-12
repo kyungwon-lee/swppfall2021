@@ -7,11 +7,11 @@ import { createBrowserHistory } from "history";
 export const history = createBrowserHistory();
 
 export interface ReduxState {
-  user: UserState;
+    user: UserState;
 }
 
 export const rootReducer = combineReducers<ReduxState>({
-  user: userReducer,
+    user: userReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
