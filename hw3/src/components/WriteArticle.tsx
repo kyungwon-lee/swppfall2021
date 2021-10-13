@@ -35,7 +35,7 @@ const WriteArticle: React.FunctionComponent<Props> = ({
     const history = useHistory();
 
     return (
-        <div>
+        <div id="write-article">
             <button id="write-tab-button" onClick={() => setCurrentTab("write")}>
                 Write
             </button>
