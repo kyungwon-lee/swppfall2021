@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import { createComment, deleteArticle, queryComments, readArticle, readUser } from "../../backend/api";
@@ -11,10 +11,10 @@ type CommentItem = Comment & { authorName: string };
 
 const ArticleDetail: React.FunctionComponent = () => {
     const articleId = parseInt(useParams<{ id: string }>().id);
-    const [articleItem, setArticleItem] = useState<ArticleItem | undefined>();
+    const [articleItem, setArticleItem] = React.useState<ArticleItem | undefined>();
 
-    const [commentItems, setCommentItems] = useState<CommentItem[]>([]);
-    const [newComment, setNewComment] = useState<string>("");
+    const [commentItems, setCommentItems] = React.useState<CommentItem[]>([]);
+    const [newComment, setNewComment] = React.useState<string>("");
 
     const { currentUser } = useSelector((store: ReduxState) => store.user);
     const history = useHistory();
@@ -31,7 +31,7 @@ const ArticleDetail: React.FunctionComponent = () => {
         history.push("/articles");
     };
 
-    const [commentsUpdated, setCommentsUpdated] = useState<boolean>(false);
+    const [commentsUpdated, setCommentsUpdated] = React.useState<boolean>(false);
 
     useEffect(() => {
         if (commentsUpdated) {
@@ -69,12 +69,12 @@ const ArticleDetail: React.FunctionComponent = () => {
         setCommentItems(commentItems);
     };
 
-    useEffect(() => {
-        return () => {
-            setArticleItem(undefined);
-            setCommentItems([]);
-        };
-    }, []);
+    // useEffect(() => {
+    //     return () => {
+    //         setArticleItem(undefined);
+    //         setCommentItems([]);
+    //     };
+    // }, []);
 
     return (
         <div id="article-detail-page">

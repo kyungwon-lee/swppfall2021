@@ -3,9 +3,10 @@ import Enzyme, { mount, shallow } from "enzyme";
 import EnzymeAdapter from "enzyme-adapter-react-17-updated";
 import * as redux from "react-redux";
 import router from "react-router";
-import { createComment, deleteArticle, queryComments, readUser } from "../../backend/api";
 
 import ArticleDetail from "./ArticleDetail";
+import * as api from "../../backend/api";
+import { tick } from "../../test-utils/mocks";
 
 Enzyme.configure({
     adapter: new EnzymeAdapter(),
@@ -40,6 +41,14 @@ const comments = [
     },
 ];
 
+const article1 = {
+    id: 0,
+    author_id: 1,
+    title: "10 React JS Articles Every Web Developer Should Read",
+    content:
+        "Hello Guys, React or React JS is a JavaScript front-end library from Facebook which lets you create HTML based GUI. It makes the task easier by providing a component-based architecture which was only available to languages like Java and C# before.",
+};
+
 const user1 = {
     id: 1,
     email: "swpp@snu.ac.kr",
@@ -48,89 +57,138 @@ const user1 = {
     logged_in: false,
 };
 
-jest.mock("../../backend/api", () => ({
-    __esModule: true,
-    deleteArticle: jest.fn(),
-    queryComments: jest.fn().mockResolvedValue({ items: comments }),
-    readUser: jest.fn(),
-    createComment: jest.fn(),
-}));
-
 const useLocationMock = jest.spyOn(router, "useLocation");
 const useParamsMock = jest.spyOn(router, "useParams");
 const useSelectorMock = jest.spyOn(redux, "useSelector");
+const useStateMock = jest.spyOn(React, "useState");
+const setArticleItemMock = jest.fn();
+const setCommentItemsMock = jest.fn();
+const setNewCommentMock = jest.fn();
+const setCommentsUpdatedMock = jest.fn();
+const readArticleMock = jest.spyOn(api, "readArticle");
+const readUserMock = jest.spyOn(api, "readUser");
+const queryCommentsMock = jest.spyOn(api, "queryComments");
+const createCommentMock = jest.spyOn(api, "createComment");
+const deleteArticleMock = jest.spyOn(api, "deleteArticle");
 
 describe("Article Detail test", () => {
     let articleDetail;
 
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
     beforeEach(() => {
-        useSelectorMock.mockReturnValue({ isLoggedIn: false, autoLoggedIn: false });
+        useSelectorMock.mockReturnValue({ currentUser: user1 });
         useLocationMock.mockReturnValue({ pathname: "/" });
         useParamsMock.mockReturnValue({ id: "1" });
-        queryComments.mockResolvedValue({ items: comments });
         articleDetail = <ArticleDetail />;
+
+        queryCommentsMock.mockResolvedValue({ items: comments });
+        readArticleMock.mockResolvedValue({ entity: article1 });
+        readUserMock.mockResolvedValue({ entity: user1 });
+        deleteArticleMock.mockResolvedValue(undefined);
+        createCommentMock.mockResolvedValue(undefined);
     });
 
     it("renders without crashing", () => {
-        const component = mount(articleDetail);
-        expect(component.find("#article-detail-page").length).toBe(1);
-    });
+        useStateMock
+            .mockReturnValueOnce([undefined, setArticleItemMock])
+            .mockReturnValueOnce([[], setCommentItemsMock])
+            .mockReturnValueOnce(["", setNewCommentMock])
+            .mockReturnValueOnce([false, setCommentsUpdatedMock]);
 
-    it("should call fetchComments and setCommentsUpdated", () => {
-        const stubInitialState = true;
-        jest.spyOn(React, "useState").mockImplementationOnce(() => React.useState(stubInitialState));
         mount(articleDetail);
-        expect(queryComments).toHaveBeenCalled();
-        expect(readUser).toHaveBeenCalled();
     });
 
-    it("should delete article and render to article list", () => {
-        const component = shallow(articleDetail);
-        const deleteButton = component.find("#delete-article-button");
-        deleteButton.simulate("click");
-
-        expect(deleteArticle).toHaveBeenCalled();
-        expect(mockPush).not.toHaveBeenCalled();
-    });
+    // it("should call fetchComments and setCommentsUpdated", () => {
+    //     const stubInitialState = true;
+    //     jest.spyOn(React, "useState").mockImplementationOnce(() => React.useState(stubInitialState));
+    //     mount(articleDetail);
+    //     expect(queryComments).toHaveBeenCalled();
+    //     expect(readUser).toHaveBeenCalled();
+    // });
 
     it("should onCommentConfirm works well", () => {
+        useStateMock
+            .mockReturnValueOnce([article1, setArticleItemMock])
+            .mockReturnValueOnce([comments, setCommentItemsMock])
+            .mockReturnValueOnce(["new comment", setNewCommentMock])
+            .mockReturnValueOnce([false, setCommentsUpdatedMock]);
+
         const component = shallow(articleDetail);
         const confirmButton = component.find("#confirm-create-comment-button");
         confirmButton.simulate("click");
-
-        expect(createComment).toHaveBeenCalled();
     });
 
-    // it("logout button rendered when logged in", () => {
-    //     useSelectorMock.mockReturnValue({ isLoggedIn: true, autoLoggedIn: false });
-    //     const component = shallow(app);
-    //     let logoutButton = component.find("#logout-button");
-    //     expect(logoutButton.length).toBe(1);
-    // });
+    it("should go back on click back button", () => {
+        useStateMock
+            .mockReturnValueOnce([undefined, setArticleItemMock])
+            .mockReturnValueOnce([[], setCommentItemsMock])
+            .mockReturnValueOnce(["new comment", setNewCommentMock])
+            .mockReturnValueOnce([false, setCommentsUpdatedMock]);
 
-    // it("logout button not rendered when not logged in", () => {
-    //     useSelectorMock.mockReturnValue({ isLoggedIn: false, autoLoggedIn: false });
-    //     const component = shallow(app);
-    //     let logoutButton = component.find("#logout-button");
-    //     expect(logoutButton.length).toBe(0);
-    // });
+        const component = shallow(articleDetail);
+        const backButton = component.find("#back-detail-article-button");
+        backButton.simulate("click");
+    });
 
-    // it("redirects to login page when tried auto login and failed", () => {
-    //     useSelectorMock.mockReturnValue({ isLoggedIn: false, autoLoggedIn: true });
-    //     mount(app);
-    //     expect(mockPush).toHaveBeenCalledWith("/login");
-    // });
+    it("should change state properly on new comment change", () => {
+        useStateMock
+            .mockReturnValueOnce([undefined, setArticleItemMock])
+            .mockReturnValueOnce([[], setCommentItemsMock])
+            .mockReturnValueOnce(["new comment", setNewCommentMock])
+            .mockReturnValueOnce([false, setCommentsUpdatedMock]);
 
-    // it("try auto login on mount", () => {
-    //     mount(app);
-    //     expect(mockDispatch).toHaveBeenCalled();
-    // });
+        const component = shallow(articleDetail);
+        const commentInput = component.find("#new-comment-content-input");
+        commentInput.simulate("change", { target: { value: "new comment" } });
+    });
 
-    // it("logout when logout button clicked", () => {
-    //     useSelectorMock.mockReturnValue({ isLoggedIn: true, autoLoggedIn: true });
-    //     const component = shallow(app);
-    //     let logoutButton = component.find("#logout-button");
-    //     logoutButton.simulate("click");
-    //     expect(mockDispatch).toHaveBeenCalled();
-    // });
+    it("should push url on click edit button", () => {
+        useStateMock
+            .mockReturnValueOnce([article1, setArticleItemMock])
+            .mockReturnValueOnce([[], setCommentItemsMock])
+            .mockReturnValueOnce(["new comment", setNewCommentMock])
+            .mockReturnValueOnce([false, setCommentsUpdatedMock]);
+
+        const component = mount(articleDetail);
+        const editButton = component.find("#edit-article-button");
+        editButton.simulate("click");
+    });
+
+    it("should delete article on click delete button", async () => {
+        useStateMock
+            .mockReturnValueOnce([article1, setArticleItemMock])
+            .mockReturnValueOnce([[], setCommentItemsMock])
+            .mockReturnValueOnce(["", setNewCommentMock])
+            .mockReturnValueOnce([false, setCommentsUpdatedMock]);
+
+        const component = mount(articleDetail);
+        await tick();
+        const deleteButton = component.find("#delete-article-button");
+        deleteButton.simulate("click");
+    });
+
+    it("should delete article on click delete button", async () => {
+        useStateMock
+            .mockReturnValueOnce([article1, setArticleItemMock])
+            .mockReturnValueOnce([comments, setCommentItemsMock])
+            .mockReturnValueOnce(["", setNewCommentMock])
+            .mockReturnValueOnce([true, setCommentsUpdatedMock]);
+
+        const component = shallow(articleDetail);
+        const confirmButton = component.find("#confirm-create-comment-button");
+        confirmButton.simulate("click");
+    });
+
+    it("should delete article on click delete button", async () => {
+        useStateMock
+            .mockReturnValueOnce([article1, setArticleItemMock])
+            .mockReturnValueOnce([comments, setCommentItemsMock])
+            .mockReturnValueOnce(["", setNewCommentMock])
+            .mockReturnValueOnce([true, setCommentsUpdatedMock]);
+
+        const component = mount(articleDetail);
+    });
 });

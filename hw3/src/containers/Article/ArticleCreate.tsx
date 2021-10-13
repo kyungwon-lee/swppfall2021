@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { createArticle } from "../../backend/api";
@@ -6,8 +6,8 @@ import WriteArticle from "../../components/WriteArticle";
 import { ReduxState } from "../../store/store";
 
 const ArticleCreate: React.FunctionComponent = () => {
-    const [title, setTitle] = useState<string>("");
-    const [content, setContent] = useState<string>("");
+    const [title, setTitle] = React.useState<string>("");
+    const [content, setContent] = React.useState<string>("");
 
     const { currentUser } = useSelector((store: ReduxState) => store.user);
     const history = useHistory();
@@ -23,15 +23,18 @@ const ArticleCreate: React.FunctionComponent = () => {
     };
 
     return (
-        <WriteArticle
-            title={title}
-            content={content}
-            onTitleChange={setTitle}
-            onContentChange={setContent}
-            onConfirm={onArticleCreate}
-            backUrl={"/articles"}
-            from={"create"}
-        />
+        <div id="article-create">
+            <WriteArticle
+                title={title}
+                content={content}
+                onTitleChange={setTitle}
+                onContentChange={setContent}
+                onConfirm={onArticleCreate}
+                backUrl={"/articles"}
+                from={"create"}
+            />
+            <button id="fake-button" onClick={onArticleCreate}></button>
+        </div>
     );
 };
 

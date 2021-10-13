@@ -8,6 +8,13 @@ Enzyme.configure({
     disableLifecycleMethods: true,
 });
 
+const mockPush = jest.fn();
+
+jest.mock("react-router", () => ({
+    ...jest.requireActual("react-router"),
+    useHistory: () => ({ push: mockPush }),
+}));
+
 describe("App test", () => {
     let articlesListItem;
 
@@ -18,5 +25,11 @@ describe("App test", () => {
     it("renders without crashing", () => {
         const component = mount(articlesListItem);
         expect(component.find("#article-list-item").length).toBe(1);
+    });
+
+    it("renders without crashing", () => {
+        const component = mount(articlesListItem);
+        const clickTitleButton = component.find("#click-title");
+        clickTitleButton.simulate("click");
     });
 });
