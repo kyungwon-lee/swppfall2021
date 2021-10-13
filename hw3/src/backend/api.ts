@@ -5,7 +5,7 @@ interface CreateProps<entityCreateProp> {
     createPayload: entityCreateProp;
 }
 
-function produceCreateAPI<entityCreateProp>(apiPath: string) {
+export function produceCreateAPI<entityCreateProp>(apiPath: string) {
     return async function ({ createPayload }: CreateProps<entityCreateProp>): Promise<{ entityId: string }> {
         try {
             const res: any = await axios.post(`/api${apiPath}`, createPayload);
@@ -22,7 +22,7 @@ interface queryReturnType<returnEntityType> {
     items: returnEntityType[];
 }
 
-function produceQueryAPI<returnEntityType>(apiPath: string) {
+export function produceQueryAPI<returnEntityType>(apiPath: string) {
     return async function (): Promise<queryReturnType<returnEntityType>> {
         try {
             const res = await axios.get(`/api${apiPath}`);
@@ -51,7 +51,7 @@ interface UpdateProps<entityUpdateProp> {
     updatePayload: entityUpdateProp;
 }
 
-function produceUpdateAPI<entityUpdateProp>(apiPath: string) {
+export function produceUpdateAPI<entityUpdateProp>(apiPath: string) {
     return async function ({ id, updatePayload }: UpdateProps<entityUpdateProp>): Promise<void> {
         try {
             await axios.put(`/api${apiPath}/${id}`, updatePayload);
@@ -62,7 +62,7 @@ function produceUpdateAPI<entityUpdateProp>(apiPath: string) {
     };
 }
 
-function produceDeleteAPI(apiPath: string) {
+export function produceDeleteAPI(apiPath: string) {
     return async function ({ id }: { id: number }): Promise<void> {
         try {
             await axios.delete(`/api${apiPath}/${id}`);
