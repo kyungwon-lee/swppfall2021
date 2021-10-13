@@ -20,3 +20,8 @@ export const getMockStore = (initialState) => {
 
     return mockStore;
 };
+
+export const tick = () =>
+    new Promise((resolve) => {
+        setTimeout(resolve, 0);
+    });
