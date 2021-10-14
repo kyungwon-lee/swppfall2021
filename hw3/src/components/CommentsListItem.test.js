@@ -29,7 +29,7 @@ describe("App test", () => {
     let commentsListItem;
 
     beforeEach(() => {
-        useSelectorMock.mockReturnValue({ currentUser });
+        useSelectorMock.mockImplementation((callback) => callback({ user: { currentUser } }));
     });
 
     it("renders without crashing", () => {

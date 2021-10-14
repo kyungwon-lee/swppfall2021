@@ -31,12 +31,8 @@ const setCurrentTabMock = jest.fn();
 describe("App test", () => {
     let writeArticle;
 
-    // afterEach(() => {
-    //     jest.resetAllMocks();
-    // });
-
     beforeEach(() => {
-        useSelectorMock.mockReturnValue({ currentUser });
+        useSelectorMock.mockImplementation((callback) => callback({ user: { currentUser } }));
         jest.spyOn(router, "useHistory").mockImplementation(() => ({ push: mockPush }));
     });
 

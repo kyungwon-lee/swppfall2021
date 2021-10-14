@@ -79,9 +79,9 @@ describe("Article Detail test", () => {
     });
 
     beforeEach(() => {
-        useSelectorMock.mockReturnValue({ currentUser: user1 });
+        useSelectorMock.mockImplementation((callback) => callback({ user: { currentUser: user1 } }));
         useLocationMock.mockReturnValue({ pathname: "/" });
-        useParamsMock.mockReturnValue({ id: "1" });
+        useParamsMock.mockReturnValue({ id: "0" });
         articleDetail = <ArticleDetail />;
 
         queryCommentsMock.mockResolvedValue({ items: comments });
@@ -189,6 +189,6 @@ describe("Article Detail test", () => {
             .mockReturnValueOnce(["", setNewCommentMock])
             .mockReturnValueOnce([true, setCommentsUpdatedMock]);
 
-        const component = mount(articleDetail);
+        mount(articleDetail);
     });
 });

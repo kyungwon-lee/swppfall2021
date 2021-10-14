@@ -34,7 +34,7 @@ describe("App test", () => {
     let articleCreate;
 
     beforeEach(() => {
-        useSelectorMock.mockReturnValue({ currentUser });
+        useSelectorMock.mockImplementation((callback) => callback({ user: { currentUser } }));
         createArticleMock.mockResolvedValue({ entityId: 1 });
         articleCreate = <ArticleCreate />;
     });

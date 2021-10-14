@@ -30,7 +30,7 @@ describe("App test", () => {
     let app;
 
     beforeEach(() => {
-        useSelectorMock.mockReturnValue({ isLoggedIn: false, autoLoggedIn: false });
+        useSelectorMock.mockImplementation((callback) => callback({ user: { isLoggedIn: true, autoLoggedIn: false } }));
         useLocationMock.mockReturnValue({ pathname: "/" });
         app = <App />;
     });
@@ -41,21 +41,22 @@ describe("App test", () => {
     });
 
     it("logout button rendered when logged in", () => {
-        useSelectorMock.mockReturnValue({ isLoggedIn: true, autoLoggedIn: false });
+        useSelectorMock.mockImplementationOnce((callback) => callback({ user: { isLoggedIn: true, autoLoggedIn: false } }));
+
         const component = shallow(app);
         let logoutButton = component.find("#logout-button");
         expect(logoutButton.length).toBe(1);
     });
 
     it("logout button not rendered when not logged in", () => {
-        useSelectorMock.mockReturnValue({ isLoggedIn: false, autoLoggedIn: false });
+        useSelectorMock.mockImplementationOnce((callback) => callback({ user: { isLoggedIn: false, autoLoggedIn: false } }));
         const component = shallow(app);
         let logoutButton = component.find("#logout-button");
         expect(logoutButton.length).toBe(0);
     });
 
     it("redirects to login page when tried auto login and failed", () => {
-        useSelectorMock.mockReturnValue({ isLoggedIn: false, autoLoggedIn: true });
+        useSelectorMock.mockImplementationOnce((callback) => callback({ user: { isLoggedIn: false, autoLoggedIn: true } }));
         mount(app);
         expect(mockPush).toHaveBeenCalledWith("/login");
     });
@@ -66,7 +67,7 @@ describe("App test", () => {
     });
 
     it("logout when logout button clicked", () => {
-        useSelectorMock.mockReturnValue({ isLoggedIn: true, autoLoggedIn: true });
+        useSelectorMock.mockImplementationOnce((callback) => callback({ user: { isLoggedIn: true, autoLoggedIn: true } }));
         const component = shallow(app);
         let logoutButton = component.find("#logout-button");
         logoutButton.simulate("click");
